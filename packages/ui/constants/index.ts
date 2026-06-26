@@ -33,7 +33,7 @@ export const themes = [
   'wireframe',
 ] as const
 
-export const FALLBACK_BACKEND_URL = 'http://127.0.0.1:9090'
+export const FALLBACK_BACKEND_URL = 'http://10.0.0.2'
 
 export enum ROUTES {
   Overview = '/overview',
