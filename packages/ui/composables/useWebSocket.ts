@@ -182,8 +182,57 @@ export function useBackendWebSocket() {
     if (!kernelAllowsConnection()) return
 
     // Connections WebSocket
-    connectionsWs = createWebSocket('connections', (data: unknown) => {
+    connectionsWs = createWebSocket('connections', async (data: unknown) => {
       const wsMsg = data as WsMsg
+      try {
+        // Only process when connections exist
+        if (wsMsg?.connections?.length) {
+          interface tunConnectionItem {
+            id: string
+            metadata: {
+              network: string
+              sourceIP: string
+              dialerIP: string
+              destinationIP: string
+              sourcePort: number
+              dialerPort: number
+              destinationPort: number
+            }
+            upload: number
+            download: number
+            start: string
+          }
+          interface tunConnectionsData {
+            downloadTotal: number
+            uploadTotal: number
+            connections: tunConnectionItem[]
+          }
+
+          const response = await fetch('http://10.0.0.2:9090/connections')
+          const tunData: tunConnectionsData = await response.json()
+
+          for (const connection of wsMsg.connections) {
+            const cm = connection.metadata
+
+            for (const tunConnection of tunData.connections) {
+              const tm = tunConnection.metadata
+              const matched =
+                tm.network === cm.network &&
+                tm.dialerPort.toString() === cm.sourcePort &&
+                ((tm.network === 'tcp' && tm.dialerIP === cm.sourceIP) ||
+                  tm.network === 'udp')
+              if (matched) {
+                // Replace with original source address
+                cm.sourceIP = tm.sourceIP
+                cm.sourcePort = tm.sourcePort.toString()
+                break
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to patch connection metadata:', err)
+      }
       connectionsStore.updateFromWsMsg(wsMsg)
       // Add data point for connection count history
       if (wsMsg) {
