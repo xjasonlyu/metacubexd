@@ -18,6 +18,7 @@
     "ensure:electron": "node -e \"require('electron')\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
+    "test:helper-package": "electron-vite build && node scripts/test-helper-package.mjs",
     "test:watch": "vitest"
   },
   "dependencies": {
