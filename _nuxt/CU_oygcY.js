@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["./BGnJf3of.js","./B_CPxiKH.js","./entry.l3hVPVrC.css"])))=>i.map(i=>d[i]);
+import{dr as e,sn as t}from"./B_CPxiKH.js";var n=null;function r(){return n||=t(()=>import(`./BGnJf3of.js`).then(e(1)),__vite__mapDeps([0,1,2]),import.meta.url).then(e=>{let t=e.default;return t.setOptions({time:{timezone:void 0}}),t}),n}export{r as t};
